@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{css/style.css}" href="../static/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
+  <title>Opret Ny Bruger</title>
+  <style>
+    body {
+      font-family: 'Source Sans Pro', sans-serif;
+      background-color: #f0f2f5;
+    }
+  </style>
+</head>
+<body>
+<div class="navbar">
+  <div class="logo">
+    <a><h1>Ønskelisten</h1></a>
+  </div>
+</div>
+<div class="main">
+  <div class="container">
+    <form>
+      <label for="username">Brugernavn</label>
+      <input type="text" id="username" name="username" placeholder="Brugernavn">
+      <label for="password">Kodeord</label>
+      <input type="password" id="password" name="password" placeholder="Kodeord">
+      <button type="submit">Opret bruger</button>
+      <a href="front.html"><button type="button">Jeg er allerede bruger</button></a>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

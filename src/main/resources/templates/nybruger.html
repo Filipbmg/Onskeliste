@@ -22,13 +22,13 @@
 </div>
 <div class="main">
   <div class="container">
-    <form>
+    <form action="nybruger" method="POST">
       <label for="username">Brugernavn</label>
       <input type="text" id="username" name="username" placeholder="Brugernavn">
       <label for="password">Kodeord</label>
       <input type="password" id="password" name="password" placeholder="Kodeord">
-      <button type="submit">Opret bruger</button>
-      <a href="front.html"><button type="button">Jeg er allerede bruger</button></a>
+      <button type="submit" value="Opret bruger">Opret bruger</button>
+      <a th:href="@{/}"><button type="button">Jeg er allerede bruger</button></a>
     </form>
   </div>
 </div>

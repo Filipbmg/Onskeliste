@@ -22,19 +22,44 @@ public class OnskeRepository {
         try{
             //connect to db
             Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
-            final String CREATE_QUERY = "INSERT INTO users(username, password) VALUES (?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(CREATE_QUERY);
 
-            //set attributer i prepared statement
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getPassword());
+            //Koden eksekveres kun hvis brugernavnet ikke er taget.
+            if (checkIfDup(user)) {
+                final String INSERT_QUERY = "INSERT INTO users(username, password) VALUES (?, ?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY);
 
-            //execute statement
-            preparedStatement.executeUpdate();
+                //set attributer i prepared statement
+                preparedStatement.setString(1, user.getUsername());
+                preparedStatement.setString(2, user.getPassword());
+
+                //execute
+                preparedStatement.executeUpdate();
+            } else {
+                System.out.println("Brugernavnet er taget");
+            }
         } catch (SQLException e) {
-            System.out.println("Could not create user");
+            System.out.println("Fejl under oprettelse af bruger");
             e.printStackTrace();
         }
+    }
+
+    public boolean checkIfDup(User user){
+        try{
+            //connect to db
+            Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
+            PreparedStatement usernameCheck = connection.prepareStatement("SELECT username FROM users WHERE username = ?");
+
+            //set attribute in prepared statement
+            usernameCheck.setString(1, user.getUsername());
+
+            //execute
+            ResultSet result = usernameCheck.executeQuery();
+            return !result.next();
+        } catch (SQLException e) {
+            System.out.println("Fejl under oprettelse af bruger");
+            e.printStackTrace();
+        }
+        return true;
     }
 
 

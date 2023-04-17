@@ -2,7 +2,6 @@ package com.example.onskeliste.controller;
 
 import com.example.onskeliste.model.User;
 import com.example.onskeliste.repository.OnskeRepository;
-import com.example.onskeliste.repository.OnskeRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,12 +32,16 @@ public class OnskeController {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         User newUser = new User();
-        if (username.length() < 2 && password.length() < 2) {
-            newUser.setUsername(username);
-            newUser.setPassword(password);
+
+        if (username == null || password == null) {
             System.out.println("For kort brugernavn eller kodeord");
             return"nybruger";
-        } else {
+        } else if (username.length() < 1 || password.length() < 1){
+            System.out.println("For kort brugernavn eller kodeord");
+            return"nybruger";
+        }else {
+            newUser.setUsername(username);
+            newUser.setPassword(password);
             user.addUser(newUser);
             return"front";
         }

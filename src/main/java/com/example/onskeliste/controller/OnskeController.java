@@ -18,8 +18,18 @@ public class OnskeController {
 
 
     @GetMapping("/")
-    public String front(){
-        return "front";
+    public String front() {return "front";}
+
+    @PostMapping("/login")
+    public String login(WebRequest request) {
+        User userLogin = new User();
+        userLogin.setUsername(request.getParameter("username"));
+        userLogin.setPassword(request.getParameter("password"));
+        if (user.verifyLoginInfo(userLogin)) {
+            return "testsuccess";
+        } else {
+            return "testfail";
+        }
     }
 
     @GetMapping("/nybruger")
@@ -27,7 +37,7 @@ public class OnskeController {
         return "nybruger";
     }
 
-    @PostMapping("/nybruger")
+    @PostMapping("/signup")
     public String createNewUser(WebRequest request) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -45,6 +55,5 @@ public class OnskeController {
             user.addUser(newUser);
             return"front";
         }
-
     }
 }

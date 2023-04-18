@@ -59,7 +59,26 @@ public class OnskeRepository {
             System.out.println("Fejl under oprettelse af bruger");
             e.printStackTrace();
         }
-        return true;
+        return false;
+    }
+    public boolean verifyLoginInfo(User user) {
+        try{
+            //connect to db
+            Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
+            PreparedStatement verifyUser = connection.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
+
+            //set attribute in prepared statement
+            verifyUser.setString(1, user.getUsername());
+            verifyUser.setString(2, user.getPassword());
+
+            //execute
+            ResultSet result = verifyUser.executeQuery();
+            return result.next();
+        } catch (SQLException e) {
+            System.out.println("Fejl under login");
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

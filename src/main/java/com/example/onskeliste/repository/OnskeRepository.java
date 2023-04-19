@@ -5,6 +5,7 @@ import com.example.onskeliste.utility.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import jakarta.servlet.http.HttpSession;
 import java.sql.*;
 
 @Repository
@@ -23,8 +24,6 @@ public class OnskeRepository {
             //connect to db
             Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
 
-            //Koden eksekveres kun hvis brugernavnet ikke er taget.
-            if (checkIfDup(user)) {
                 final String INSERT_QUERY = "INSERT INTO users(username, password) VALUES (?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY);
 
@@ -34,9 +33,6 @@ public class OnskeRepository {
 
                 //execute
                 preparedStatement.executeUpdate();
-            } else {
-                System.out.println("Brugernavnet er taget");
-            }
         } catch (SQLException e) {
             System.out.println("Fejl under oprettelse af bruger");
             e.printStackTrace();
@@ -54,6 +50,8 @@ public class OnskeRepository {
 
             //execute
             ResultSet result = usernameCheck.executeQuery();
+
+            //returner true hvis brugernavnet ikke er i databasen allerede
             return !result.next();
         } catch (SQLException e) {
             System.out.println("Fejl under oprettelse af bruger");
@@ -73,7 +71,9 @@ public class OnskeRepository {
 
             //execute
             ResultSet result = verifyUser.executeQuery();
-            return result.next();
+            if (result.next()) {
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println("Fejl under login");
             e.printStackTrace();

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" th:href="@{css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
-  <title>Fejl I Oprettelsen</title>
+  <title>Ønskelisten</title>
   <style>
     body {
       font-family: 'Source Sans Pro', sans-serif;
@@ -21,11 +22,23 @@
   </div>
 </div>
 <div class="main">
-  <h2>Fejl I oprettelsen</h2>
-  <h3>Enten var brugernavn/Kodeord for kort(Min. 3 tegn), eller også er brugernavnet allerede taget.</h3>
-  <div class="container">
-    <form action="/nybruger" method="GET">
-      <a th:href="@{/nybruger}"><button type="button">Prøv Igen</button></a>
-    </form>
+  <h2 th:text="${username + 's Ønskeliste:'}"></h2>
+  <div>
+    <div class="wishlist">
+      <ul class="read-only">
+        <li th:each="item: ${wishlist}">
+          <span th:if="${#strings.contains(item, '/')}">
+            <a th:href="${item}" th:text="${item}"></a>
+          </span>
+          <span th:if="${not #strings.contains(item, '/')}">
+            <span th:text="${item}"></span>
+          </span>
+        </li>
+      </ul>
     </div>
+  </div>
+
+
 </div>
+</body>
+</html>

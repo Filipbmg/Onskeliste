@@ -1,15 +1,18 @@
 package com.example.onskeliste.controller;
 
-import com.example.onskeliste.model.User;
+import com.example.onskeliste.model.*;
 import com.example.onskeliste.repository.OnskeRepository;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.ArrayList;
+
+@SuppressWarnings("unchecked")
 @Controller
 public class OnskeController {
     private OnskeRepository user;
@@ -21,6 +24,12 @@ public class OnskeController {
     public String front() {
         return "login";}
 
+    @GetMapping("/login")
+        public String login(){
+        return "login";
+    }
+
+
     @PostMapping("/login")
     public String login(WebRequest request, HttpSession session) {
         User userLogin = new User();
@@ -28,7 +37,8 @@ public class OnskeController {
         userLogin.setPassword(request.getParameter("password"));
         if (user.verifyLoginInfo(userLogin)) {
             session.setAttribute("username", userLogin.getUsername());
-            return "testsuccess";
+            session.setAttribute("wishlist", user.getWishlist(userLogin));
+            return "redirect:/onskeliste";
         } else {
             return "login";
         }
@@ -59,8 +69,59 @@ public class OnskeController {
                 return"fejlioprettelse";
             } else {
                 user.addUser(newUser);
-                return"login";
+                return"redirect:/";
             }
         }
     }
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return"redirect:/";
+    }
+
+    @GetMapping("/onskeliste")
+    public String onskeliste(HttpSession session) {
+        if (session.getAttribute("username") != null) {
+            return"onskeliste";
+        }
+        return "redirect:/login";
+    }
+
+    @PostMapping("/onskeliste/fjern")
+    public String removeWish(@RequestParam("byeLink") String byeLink, HttpSession session) {
+        ArrayList<String> wishlist = (ArrayList<String>) session.getAttribute("wishlist");
+        wishlist.remove(byeLink);
+        session.setAttribute("wishlist", wishlist);
+        user.removeWishFromDB(byeLink, session);
+        return"redirect:/onskeliste";
+    }
+
+    @PostMapping("/onskeliste/tilfoj")
+    public String addWish(WebRequest request, HttpSession session) {
+        if (request != null) {
+            if (request.getParameter("addLink").length() != 0) {
+                user.addWishtoDB(request.getParameter("addLink"), session);
+                ArrayList<String> wishlist = (ArrayList<String>) session.getAttribute("wishlist");
+                wishlist.add(request.getParameter("addLink"));
+                session.setAttribute("wishlist", wishlist);
+            }
+        }
+        return"redirect:/onskeliste";
+
+    }
+
+    @GetMapping("/visit/{username}")
+    public String shareList(@PathVariable("username") String username, Model userToVisit) {
+        User visit = new User();
+        visit.setUsername(username);
+        if (!user.checkIfDup(visit)) {
+            userToVisit.addAttribute("wishlist", user.getWishlist(visit));
+            userToVisit.addAttribute("username", username);
+            return "del";
+        }
+        return "redirect:/nybruger";
+
+    }
+
 }

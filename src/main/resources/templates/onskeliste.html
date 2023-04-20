@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <title>Ønskelisten</title>
+    <style>
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: #f0f2f5;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="logo">
+        <a><h1>Ønskelisten</h1></a>
+    </div>
+    <form action="/logout" method="POST">
+        <button type="submit" class="logout-button">Log af</button>
+    </form>
+</div>
+<div class="main">
+    <h2 th:text="${session.username + 's Ønskeliste:'}"></h2>
+    <div>
+        <div class="wishlist">
+            <ul>
+                <li th:each="item: ${session.wishlist}">
+                    <span th:if="${#strings.contains(item, '/')}">
+                        <a th:href="${item}" th:text="${item}"></a>
+                    </span>
+                    <span th:if="${not #strings.contains(item, '/')}">
+                        <span th:text="${item}"></span>
+                    </span>
+                    <form th:action="@{/onskeliste/fjern}" method="post">
+                        <input type="hidden" name="byeLink" th:value="${item}" />
+                        <button type="submit" class="abort-button">X</button>
+                    </form>
+                </li>
+            </ul>
+            <form th:action="@{/onskeliste/tilfoj}" method="post">
+                <label for="addLink" style="font-weight: bold; font-size: 1.1em;">Tilføj Ønske:</label>
+                <input type="text" id="addLink" name="addLink" placeholder="Ønske"/>
+                <button type="submit" class="button">Tilføj</button>
+            </form>
+            <form th:action="@{/visit/{username}(username=${session.username})}">
+                <button type="submit" id="del">
+                    <a th:href="@{/visit/{username}(username=${session.username})}">
+                        Del din ønskeliste
+                    </a>
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

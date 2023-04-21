@@ -11,28 +11,34 @@ import java.util.ArrayList;
 
 @Repository
 public class OnskeRepository {
+
     @Value("${spring.datasource.url}")
-    private String dbURL;
+    private String dbUrl;
 
     @Value("${spring.datasource.username}")
-    private String uID;
+    private String username;
 
     @Value("${spring.datasource.password}")
-    private String pwd;
+    private String password;
+
+    //URL jdbc:mysql://localhost:3306/onskelistefilip
+    //USERNAME root
+    //PASSWORD bøfwellington
+
 
     public void addUser(User user){
         try{
             //connect to db
-            Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
+            Connection connection = ConnectionManager.getConnection(dbUrl, username, password);
 
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users(username, password) VALUES (?, ?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users(username, password) VALUES (?, ?)");
 
-                //set attributer i prepared statement
-                preparedStatement.setString(1, user.getUsername());
-                preparedStatement.setString(2, user.getPassword());
+            //set attributer i prepared statement
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, user.getPassword());
 
-                //execute
-                preparedStatement.executeUpdate();
+            //execute
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Fejl under oprettelse af bruger");
             e.printStackTrace();
@@ -42,7 +48,7 @@ public class OnskeRepository {
     public boolean checkIfDup(User user){
         try{
             //connect to db
-            Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
+            Connection connection = ConnectionManager.getConnection(dbUrl, username, password);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT username FROM users WHERE username = ?");
 
             //set attribute in prepared statement
@@ -62,7 +68,7 @@ public class OnskeRepository {
     public boolean verifyLoginInfo(User user) {
         try{
             //connect to db
-            Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
+            Connection connection = ConnectionManager.getConnection(dbUrl, username, password);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
 
             //set attribute in prepared statement
@@ -85,7 +91,7 @@ public class OnskeRepository {
         ArrayList<String> wishlist = new ArrayList<>();
         try{
             //connect to db
-            Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
+            Connection connection = ConnectionManager.getConnection(dbUrl, username, password);
 
             //Hent userID
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM users WHERE username = ?");
@@ -114,7 +120,7 @@ public class OnskeRepository {
     public void removeWishFromDB(String byeLink, HttpSession session) {
         try{
             //connect to db
-            Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
+            Connection connection = ConnectionManager.getConnection(dbUrl, username, password);
 
             //Hent userID
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM users WHERE username = ?");
@@ -139,7 +145,7 @@ public class OnskeRepository {
     public void addWishtoDB(String addLink, HttpSession session) {
         try{
             //connect to db
-            Connection connection = ConnectionManager.getConnection(dbURL, uID, pwd);
+            Connection connection = ConnectionManager.getConnection(dbUrl, username, password);
 
             //Hent userID
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM users WHERE username = ?");

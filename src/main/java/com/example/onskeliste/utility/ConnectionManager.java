@@ -12,7 +12,7 @@ public class ConnectionManager {
     public static Connection getConnection(String dbUrl, String username, String password){
         if (connection == null) {
             try {
-                connection = DriverManager.getConnection("filipmysql.mysql.database.azure.com:3306", "Filip", "Beefwellington#");
+                connection = DriverManager.getConnection(dbUrl, username, password);
             } catch (SQLException e) {
                 System.out.println("Could not connect to database");
                 e.printStackTrace();
